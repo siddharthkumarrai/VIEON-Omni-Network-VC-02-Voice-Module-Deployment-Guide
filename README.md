@@ -33,6 +33,31 @@ Mikroe-hosted VC-02 datasheet.
 
 ---
 
+## 0. Confirmed Physical Board — VC-01/VC-02-Kit (your unit)
+
+Your photographed board is silkscreened "NodeMCU-Series VC-01/02-Kit
+K552." Searches across AI-Thinker's own listings, DigiKey, RobotShop,
+Techiesms, and OpenELAB confirm: **"K552" is not a separate documented
+model** — it's a PCB batch/revision marking on the standard **shared
+VC-01-Kit / VC-02-Kit board**, which every source describes the same
+way: US516P6 chip, CH340C USB-to-serial bridge, shared design between
+the VC-01 and VC-02 module variants. There is no model-specific
+alternate documentation for "K552" — everything in this guide for the
+standard VC-02-Kit applies directly to your board.
+
+Confirmed pinout from your board photo:
+
+**Top row:** `VCC` `GND` `RX1` `TX1` `IOA27` `SCL` `SDA` `SCL_5V` `SDA_5V`
+**Bottom row:** `GND` `3V3OUT` `DAC_R` `DAC_L` `TMS` `TCK` `NC` `VCC`
+
+- `TX1` / `RX1` — UART1, the command/data interface (§3 below)
+- `DAC_L` / `DAC_R` — analog audio out, already wired to your onboard speaker
+- `TMS` / `TCK` — JTAG lines (§3.5 below covers what's actually confirmed vs. not, for JTAG flashing)
+- `SDA` / `SCL` (and their `_5V` variants) — I2C, broken out for peripherals
+- `IOA27` — GPIO, commonly used as a wake/boot-mode trigger pin on this board family
+
+---
+
 ## 1. Platform & Account
 
 - Platform: **http://voice.ai-thinker.com/**
@@ -178,6 +203,23 @@ void loop() {
   }
 }
 ```
+
+---
+
+### 3.5 JTAG (TMS/TCK) — what's actually confirmed
+
+- AI-Thinker's own documentation confirms JTAG burning requires a
+  **dedicated AI-Thinker/Unisound JTAG debugger** — **J-Link is
+  explicitly not supported.**
+- Beyond that, no official source names a specific purchasable model
+  number for that debugger, or confirms whether any open-source JTAG
+  adapter can substitute.
+- **Practical recommendation:** use the Micro-USB/CH340C serial path
+  (§4) as your primary flashing method — it's fully documented and
+  works over the same TX1/RX1 wiring you already have. Treat JTAG as a
+  fallback only if serial flashing genuinely fails, and confirm debugger
+  compatibility with AI-Thinker support (bbs.ai-thinker.com or
+  tara@aithinker.com) before buying any JTAG hardware.
 
 ---
 
